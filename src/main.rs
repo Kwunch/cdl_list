@@ -165,9 +165,7 @@ pub fn print_current(current: *mut VecString) {
         }
         print!(" ");
         io::stdout().flush().unwrap();
-    }
 
-    unsafe {
         if (*current).is_head() {
             print!("[Head]")
         }
