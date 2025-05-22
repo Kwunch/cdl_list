@@ -14,7 +14,7 @@ mod vec;
 fn main() {
     let mut list = Dll::new();
     loop {
-        // Take input from the user and put it in char array
+        // Take input from the user and put it in a char array
         print!("Enter CMD -> ");
         io::stdout().flush().unwrap();
         let input = get_input();
@@ -48,9 +48,7 @@ fn main() {
                 continue;
             }
             b"iter" => {
-                unsafe {
-                    iter(&list);
-                }
+                iter(&list);
                 continue;
             }
             b"exit" => {
@@ -64,14 +62,12 @@ fn main() {
                 let string = String::new(input.into_boxed_slice());
 
                 // Push the string to the linked list
-                unsafe {
-                    if command == b"push_front" {
-                        list.push(string, true);
-                    } else if command == b"push_back" {
-                        list.push(string, false);
-                    } else {
-                        println!("Invalid command");
-                    }
+                if command == b"push_front" {
+                    list.push(string, true);
+                } else if command == b"push_back" {
+                    list.push(string, false);
+                } else {
+                    println!("Invalid command");
                 }
             }
             _ => {}
@@ -125,7 +121,7 @@ pub fn get_cmd_index(input: &Vec<u8>) -> usize {
     index
 }
 
-pub unsafe fn iter(list: &Dll) {
+pub fn iter(list: &Dll) {
     if list.is_empty() {
         println!("List is empty");
         return;
@@ -134,27 +130,29 @@ pub unsafe fn iter(list: &Dll) {
     let mut current = list.get_head();
 
     loop {
-        print_current(current);
+        unsafe {
+            print_current(current);
 
-        list.view(true);
+            list.view(true);
 
-        print!("Enter a command [(n)ext/(p)rev/(e)xit]: ");
-        io::stdout().flush().unwrap();
-        let input = get_input();
+            print!("Enter a command [(n)ext/(p)rev/(e)xit]: ");
+            io::stdout().flush().unwrap();
+            let input = get_input();
 
-        if input.eq_ignore_ascii_case(b"n") || input.eq_ignore_ascii_case(b"next") {
-            current = (*current).get_next();
-        } else if input.eq_ignore_ascii_case(b"p") || input.eq_ignore_ascii_case(b"prev") {
-            current = (*current).get_prev();
-        } else if input.eq_ignore_ascii_case(b"e") || input.eq_ignore_ascii_case(b"exit") {
-            break;
-        } else {
-            println!("Invalid command");
+            if input.eq_ignore_ascii_case(b"n") || input.eq_ignore_ascii_case(b"next") {
+                current = (*current).get_next();
+            } else if input.eq_ignore_ascii_case(b"p") || input.eq_ignore_ascii_case(b"prev") {
+                current = (*current).get_prev();
+            } else if input.eq_ignore_ascii_case(b"e") || input.eq_ignore_ascii_case(b"exit") {
+                break;
+            } else {
+                println!("Invalid command");
+            }
         }
     }
 }
 
-pub unsafe fn print_current(current: *mut VecString) {
+pub fn print_current(current: *mut VecString) {
     print!("Current Node -> ");
     io::stdout().flush().unwrap();
 
@@ -169,11 +167,13 @@ pub unsafe fn print_current(current: *mut VecString) {
         io::stdout().flush().unwrap();
     }
 
-    if (*current).is_head() {
-        print!("[Head]")
-    }
-    if (*current).is_tail() {
-        print!("[Tail]")
+    unsafe {
+        if (*current).is_head() {
+            print!("[Head]")
+        }
+        if (*current).is_tail() {
+            print!("[Tail]")
+        }
     }
     println!();
 }

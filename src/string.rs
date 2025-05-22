@@ -1,4 +1,3 @@
-use std::string::String as StdString;
 #[derive(Debug)]
 pub struct String {
     char_array: Box<[u8]>,
@@ -21,10 +20,6 @@ impl String {
             char_array: char_array.into_boxed_slice(),
             len,
         }
-    }
-
-    pub fn from_string(s: StdString) -> Self {
-        Self::from_chars(s.chars().collect())
     }
 
     pub fn get_char_array(&self) -> &[u8] {
